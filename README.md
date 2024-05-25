@@ -430,8 +430,8 @@ static int archeology_readdir(const char *path, void *buf, fuse_fill_dir_t fille
 ```c
 static int archeology_open(const char *path, struct fuse_file_info *fi) {
     return 0;
-} ```
-
+}
+```
 
 
 Membaca konten file
