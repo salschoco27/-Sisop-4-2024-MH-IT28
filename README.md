@@ -586,19 +586,19 @@ int main(int argc, char *argv[]) {
 
 ```
 
-**Command untuk compile**
+- **Command untuk compile**
 ``` gcc -Wall archeology.c -o archeology $(pkg-config --cflags --libs fuse) ```
 *dibutuhkan install pkgconf (sudo apt-get install pkgconf)
 
-**Command untuk menjalankan**
+- **Command untuk menjalankan**
 ``` ./archeology [path ke folder] ```
 
-**Langkah untuk mount folder**
+- **Langkah untuk mount folder**
 ```
 mkdir sisop4
 cd sisop4
 mount
 ```
 
-**Langkah untuk unmount folder**
+- **Langkah untuk unmount folder**
 ```sudo fusermount -u /home/salsa/sisop4/mount_point```
