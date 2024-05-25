@@ -4,13 +4,17 @@ Kelompok IT 28:
 - Fadlillah Cantika Sari H (5027271042)
 - I Dewa Made Satya Raditya (5027271051)
 ## Soal 1
+Define library
 ```c
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
 #include <string.h>
 #include <sys/stat.h>
+```
 
+Function untuk membuat watermark
+```c
 void BikinWM(const char *folderName) {
    DIR *dir;
     struct dirent *ent;
@@ -35,11 +39,18 @@ void BikinWM(const char *folderName) {
     // tutup direktori
     closedir(dir);
 }
+```
+
+Function untuk mengubah permit
+```c
 void UbahPermit(const char *fileName) {
     
     chmod("script.sh", 0755);
-
 }
+```
+
+Main Function
+```c
 int main() {
     BikinWM("wm-foto");
     UbahPermit("script.sh");
@@ -47,6 +58,7 @@ int main() {
     return 0;
 }
 ```
+
 ## Soal 2
 ```c
 //pesan.c
@@ -272,8 +284,11 @@ define library, menggunakan FUSE
 #define CHUNK_SIZE 10240 // 10KB
 ```
 
+
 Path relics
 ```c static const char *relics_path = "relics"; ```
+
+
 
 Untuk split file
 ```c
@@ -304,6 +319,8 @@ void split_file(const char *filepath) {
     fclose(file);
 }
 ```
+
+
 
 Fungsi untuk menggabungkan file
 ```c
@@ -350,6 +367,8 @@ int merge_chunks(const char *path, char **merged_content, size_t *size) {
     return 0;
 }
 ```
+
+
 Untuk mendapatkan atribut file atau direktori dan memeriksa file yang sesuai dengan path di relics_path.
 ```c
 static int archeology_getattr(const char *path, struct stat *stbuf) {
@@ -372,6 +391,8 @@ static int archeology_getattr(const char *path, struct stat *stbuf) {
     return res;
 }
 ```
+
+
 
 Membaca isi direktori dan mengisi buffer dengan nama file yang ditemukan.
 ```c
@@ -405,10 +426,12 @@ static int archeology_readdir(const char *path, void *buf, fuse_fill_dir_t fille
 }
 ```
 
+
 ```c
 static int archeology_open(const char *path, struct fuse_file_info *fi) {
     return 0;
 } ```
+
 
 
 Membaca konten file
@@ -437,6 +460,7 @@ static int archeology_read(const char *path, char *buf, size_t size, off_t offse
 }
 ```
 
+
 Menulis konten ke file sementara, memecah file menjadi chunk, dan kemudian menghapus file sementara.
 ```c
 static int archeology_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi) {
@@ -456,6 +480,8 @@ static int archeology_write(const char *path, const char *buf, size_t size, off_
     return size;
 }
 ```
+
+
 Menghapus file chunk yang terkait dengan path tertentu.
 ```c
 static int archeology_unlink(const char *path) {
@@ -475,6 +501,7 @@ static int archeology_unlink(const char *path) {
     return 0;
 }
 ```
+
 
 Mendaftarkan operasi yang diimplementasikan untuk FUSE dan main function untuk menjalankan filesystem FUSE dengan operasi yang telah didefinisikan.
 ```c
