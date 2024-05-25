@@ -244,3 +244,10 @@ int main(int argc, char *argv[]) {
 }
 
 ```
+
+Command untuk compile
+``` gcc -Wall archeology.c -o archeology $(pkg-config --cflags --libs fuse) ```
+*dibutuhkan install pkgconf (sudo apt-get install pkgconf)
+
+Command untuk menjalankan
+``` ./archeology [path ke folder] ```
