@@ -4,7 +4,7 @@ Kelompok IT 28:
 - Fadlillah Cantika Sari H (5027271042)
 - I Dewa Made Satya Raditya (5027271051)
 ## Soal 1
-Define library
+**Define library**
 ```c
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,7 +13,7 @@ Define library
 #include <sys/stat.h>
 ```
 
-Function untuk membuat watermark
+**Function untuk membuat watermark**
 ```c
 void BikinWM(const char *folderName) {
    DIR *dir;
@@ -41,7 +41,7 @@ void BikinWM(const char *folderName) {
 }
 ```
 
-Function untuk mengubah permit
+**Function untuk mengubah permit**
 ```c
 void UbahPermit(const char *fileName) {
     
@@ -49,7 +49,7 @@ void UbahPermit(const char *fileName) {
 }
 ```
 
-Main Function
+**Main Function**
 ```c
 int main() {
     BikinWM("wm-foto");
@@ -60,9 +60,11 @@ int main() {
 ```
 
 ## Soal 2
-```c
-//pesan.c
 
+### pesan.c
+Definisi header & library
+
+```c
 #define FUSE_USE_VERSION 31
 
 #include <fuse.h>
@@ -78,10 +80,18 @@ int main() {
 #include <openssl/bio.h>
 #include <openssl/evp.h>
 #include <openssl/buffer.h>
+```
 
+
+Definisi Variabel Global
+```c
 static const char *dirpath = "/home/aca/pesan";
+```
 
-// Fungsi untuk mencatat tindakan
+Variabel ini mendefinisikan path ke direktori yang akan dipantau oleh FUSE.
+
+***Fungsi untuk mencatat history***
+```c
 void log_action(const char *status, const char *tag, const char *info) {
     FILE *log_file = fopen("/home/aca/logs-fuse.log", "a");
     if (log_file != NULL) {
@@ -93,36 +103,31 @@ void log_action(const char *status, const char *tag, const char *info) {
         fclose(log_file);
     }
 }
+```
+Fungsi `log_action` mencatat tindakan tertentu ke dalam file log. Ini termasuk status, tag, dan informasi tambahan, serta timestamp saat pencatatan dilakukan.
 
-// Fungsi decoding Base64
+
+```c
 void base64_decode(const char *input, char **output) {
     // Implementasi decoding Base64
 }
 
-// Fungsi decoding ROT13
 void rot13_decode(const char *input, char *output) {
     // Implementasi decoding ROT13
 }
 
-// Fungsi decoding Hex
 void hex_decode(const char *input, char *output) {
     // Implementasi decoding Hex
 }
 
-// Fungsi membalik teks
 void reverse_text(const char *input, char *output) {
     // Implementasi membalik teks
 }
+```
+Fungsi-fungsi ini direncanakan untuk mengimplementasikan berbagai metode decoding teks, seperti Base64, ROT13, Hex, dan membalik teks.
 
-// Deklarasi fungsi pesan_getattr
-static int pesan_getattr(const char *path, struct stat *stbuf);
-
-// Operasi Fuse untuk folder "pesan"
-static struct fuse_operations pesan_oper = {
-    .getattr = pesan_getattr,
-    // Anda bisa menambahkan fungsi-fungsi lain yang digunakan di sini
-};
-
+**Fungsi `getattr` untuk mendapatkan atribut dari sebuah file atau direktori yang ditunjuk oleh `path`. Atribut tersebut disimpan dalam `stbuf`.** 
+```c
 static int pesan_getattr(const char *path, struct stat *stbuf) {
     int res;
     char fpath[1000];
@@ -131,12 +136,32 @@ static int pesan_getattr(const char *path, struct stat *stbuf) {
     if (res == -1) return -errno;
     return 0;
 }
+```
 
+**Struktur Operasi FUSE**
+
+```c
+static struct fuse_operations pesan_oper = {
+    .getattr = pesan_getattr,
+    // Anda bisa menambahkan fungsi-fungsi lain yang digunakan di sini
+};
+```
+
+Struktur ini mendefinisikan operasi-operasi FUSE yang digunakan dalam sistem file ini, salah satunya adalah `getattr`.
+
+**Fungsi `main`**
+```c
 int main(int argc, char *argv[]) {
     return fuse_main(argc, argv, &pesan_oper, NULL);
 }
+```
 
-//rahasia.c
+Fungsi `main` adalah titik masuk program yang memanggil `fuse_main` dengan argumen yang diberikan dan struktur operasi FUSE.
+
+## rahasia.c
+
+Define library & header
+```c
 #define FUSE_USE_VERSION 31
 
 #include <fuse.h>
@@ -149,16 +174,26 @@ int main(int argc, char *argv[]) {
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
+```
 
-// Fungsi untuk memeriksa password
+Kode ini mendefinisikan versi FUSE yang digunakan dan mengimpor berbagai header yang diperlukan untuk operasi file dan direktori.
+
+**Fungsi untuk Memeriksa Password**
+
+```c
 int check_password() {
     char input[100];
     printf("Masukkan password untuk mengakses folder ini: ");
     scanf("%99s", input);
     return strcmp(input, "acacicu") == 0; // Ganti dengan password yang Anda inginkan
 }
+```
 
-// Fungsi untuk mendapatkan atribut file
+Fungsi `check_password` meminta pengguna untuk memasukkan password dan memeriksa apakah password tersebut cocok dengan yang diharapkan.
+
+**Fungsi `getattr`**
+
+```c
 static int rahasia_getattr(const char *path, struct stat *stbuf) {
     int res;
     res = lstat(path, stbuf);
@@ -166,8 +201,13 @@ static int rahasia_getattr(const char *path, struct stat *stbuf) {
         return -errno;
     return 0;
 }
+```
 
-// Fungsi untuk membaca isi direktori
+Fungsi ini mendapatkan atribut dari sebuah file atau direktori yang ditunjuk oleh `path`. Atribut tersebut disimpan dalam `stbuf`.
+
+**Fungsi `readdir`**
+
+```c
 static int rahasia_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi) {
     // Memeriksa password
     if (!check_password())
@@ -191,8 +231,13 @@ static int rahasia_readdir(const char *path, void *buf, fuse_fill_dir_t filler, 
     closedir(dp);
     return 0;
 }
+```
 
-// Fungsi untuk membuka file
+Fungsi ini membaca isi direktori yang ditunjuk oleh `path`. Sebelum membaca direktori, fungsi ini memeriksa password pengguna. Jika password salah, akses akan ditolak.
+
+**Fungsi `open`**
+
+```c
 static int rahasia_open(const char *path, struct fuse_file_info *fi) {
     // Memeriksa password
     if (!check_password())
@@ -206,8 +251,13 @@ static int rahasia_open(const char *path, struct fuse_file_info *fi) {
     close(fd);
     return 0;
 }
+```
 
-// Fungsi untuk membaca file
+Fungsi ini membuka file yang ditunjuk oleh `path`. Sebelum membuka file, fungsi ini memeriksa password pengguna.
+
+**Fungsi `read`**
+
+```c
 static int rahasia_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi) {
     // Memeriksa password
     if (!check_password())
@@ -228,8 +278,13 @@ static int rahasia_read(const char *path, char *buf, size_t size, off_t offset, 
     close(fd);
     return res;
 }
+```
 
-// Fungsi untuk menulis file
+Fungsi ini membaca isi file yang ditunjuk oleh `path`. Sebelum membaca file, fungsi ini memeriksa password pengguna.
+
+**Fungsi `write`**
+
+```c
 static int rahasia_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi) {
     // Memeriksa password
     if (!check_password())
@@ -250,8 +305,13 @@ static int rahasia_write(const char *path, const char *buf, size_t size, off_t o
     close(fd);
     return res;
 }
+```
 
-// Struktur operasi FUSE
+Fungsi ini menulis data ke file yang ditunjuk oleh `path`. Sebelum menulis ke file, fungsi ini memeriksa password pengguna.
+
+**Struktur Operasi FUSE**
+
+```c
 static struct fuse_operations rahasia_oper = {
     .getattr = rahasia_getattr,
     .readdir = rahasia_readdir,
@@ -259,15 +319,23 @@ static struct fuse_operations rahasia_oper = {
     .read = rahasia_read,
     .write = rahasia_write,
 };
+```
 
-// Fungsi utama
+Struktur ini mendefinisikan operasi-operasi FUSE yang digunakan dalam sistem file ini, termasuk `getattr`, `readdir`, `open`, `read`, dan `write`.
+
+**Fungsi `main`**
+
+```c
 int main(int argc, char *argv[]) {
     return fuse_main(argc, argv, &rahasia_oper, NULL);
 }
 ```
+
+Fungsi `main` adalah titik masuk program yang memanggil `fuse_main` dengan argumen yang diberikan dan struktur operasi FUSE.
+
 ## Soal 3
 ### archeology.c
-define library, menggunakan FUSE
+**define library, menggunakan FUSE**
 ```c
 #define FUSE_USE_VERSION 30
 #include <fuse.h>
@@ -285,12 +353,12 @@ define library, menggunakan FUSE
 ```
 
 
-Path relics
+**Path relics**
 ```c static const char *relics_path = "relics"; ```
 
 
 
-Untuk split file
+**Untuk split file**
 ```c
 void split_file(const char *filepath) {
     FILE *file = fopen(filepath, "rb");
@@ -322,7 +390,7 @@ void split_file(const char *filepath) {
 
 
 
-Fungsi untuk menggabungkan file
+**Fungsi untuk menggabungkan file**
 ```c
 int merge_chunks(const char *path, char **merged_content, size_t *size) {
     char chunk_path[1024];
@@ -369,7 +437,7 @@ int merge_chunks(const char *path, char **merged_content, size_t *size) {
 ```
 
 
-Untuk mendapatkan atribut file atau direktori dan memeriksa file yang sesuai dengan path di relics_path.
+**Untuk mendapatkan atribut file atau direktori dan memeriksa file yang sesuai dengan path di relics_path.**
 ```c
 static int archeology_getattr(const char *path, struct stat *stbuf) {
     int res = 0;
@@ -392,9 +460,7 @@ static int archeology_getattr(const char *path, struct stat *stbuf) {
 }
 ```
 
-
-
-Membaca isi direktori dan mengisi buffer dengan nama file yang ditemukan.
+**Membaca isi direktori dan mengisi buffer dengan nama file yang ditemukan.**
 ```c
 static int archeology_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi) {
     (void) offset;
@@ -434,7 +500,7 @@ static int archeology_open(const char *path, struct fuse_file_info *fi) {
 ```
 
 
-Membaca konten file
+**Membaca konten file**
 ```c
 static int archeology_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi) {
     char *merged_content;
@@ -461,7 +527,7 @@ static int archeology_read(const char *path, char *buf, size_t size, off_t offse
 ```
 
 
-Menulis konten ke file sementara, memecah file menjadi chunk, dan kemudian menghapus file sementara.
+**Menulis konten ke file sementara, memecah file menjadi chunk, dan kemudian menghapus file sementara.**
 ```c
 static int archeology_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi) {
     char full_path[1024];
@@ -482,7 +548,7 @@ static int archeology_write(const char *path, const char *buf, size_t size, off_
 ```
 
 
-Menghapus file chunk yang terkait dengan path tertentu.
+**Menghapus file chunk yang terkait dengan path tertentu.**
 ```c
 static int archeology_unlink(const char *path) {
     char full_path[1024];
@@ -503,7 +569,7 @@ static int archeology_unlink(const char *path) {
 ```
 
 
-Mendaftarkan operasi yang diimplementasikan untuk FUSE dan main function untuk menjalankan filesystem FUSE dengan operasi yang telah didefinisikan.
+**Mendaftarkan operasi yang diimplementasikan untuk FUSE dan main function untuk menjalankan filesystem FUSE dengan operasi yang telah didefinisikan.**
 ```c
 static struct fuse_operations archeology_oper = {
     .getattr   = archeology_getattr,
@@ -520,9 +586,19 @@ int main(int argc, char *argv[]) {
 
 ```
 
-Command untuk compile
+**Command untuk compile**
 ``` gcc -Wall archeology.c -o archeology $(pkg-config --cflags --libs fuse) ```
 *dibutuhkan install pkgconf (sudo apt-get install pkgconf)
 
-Command untuk menjalankan
+**Command untuk menjalankan**
 ``` ./archeology [path ke folder] ```
+
+**Langkah untuk mount folder**
+```
+mkdir sisop4
+cd sisop4
+mount
+```
+
+**Langkah untuk unmount folder**
+```sudo fusermount -u /home/salsa/sisop4/mount_point```
