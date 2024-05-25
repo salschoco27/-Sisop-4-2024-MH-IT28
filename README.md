@@ -41,7 +41,7 @@ void BikinWM(const char *folderName) {
 }
 ```
 
-**Function untuk mengubah permit**
+**Function untuk mengubah permit pada script.sh**
 ```c
 void UbahPermit(const char *fileName) {
     
@@ -58,6 +58,9 @@ int main() {
     return 0;
 }
 ```
+
+kendala dalam pengerjaan:
+- tidak sempat mengerjakan bagian "file dengan prefix "test" yang ketika disimpan akan mengalami pembalikan (reverse) isi dari file tersebut."
 
 ## Soal 2
 
